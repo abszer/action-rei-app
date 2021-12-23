@@ -13,6 +13,7 @@ const pool = new Pool({ connectionString });
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/test', (req, res) => {
+     console.log(pool);
      pool.query('SELECT * FROM leads LIMIT 10', (err, response) => {
           console.log(response);
           res.json(response);
