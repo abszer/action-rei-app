@@ -1,29 +1,25 @@
 const path = require('path');
 const express = require('express');
-const { Pool } = require('pg');
+const { Client } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 // const connectionString = process.env.DATABASE_URL || "postgresql://localhost:5432/flights";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized=false } });
+const client = new Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+client.connect(() => {
+     console.log("connected to postgres");
+})
 
 
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/test', (req, res) => {
-     console.log(pool);
-     pool.query('SELECT * FROM leads')
-          .then((response) => {
-               res.json(response);
-               console.log(response);
-          })
-          .catch((err) => {
-               res.send(err);
-          });
-          pool.end();
-          console.log('pool drained');
+     client.query('SELECT * FROM leads', (err, response) => {
+          if (err) res.send(err);
+          res.json(response.rows);
+     })
 })
 
 app.listen(PORT, () => {
