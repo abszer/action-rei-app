@@ -14,10 +14,11 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/test', (req, res) => {
      pool.query('SELECT * FROM leads LIMIT 10', (err, response) => {
-          console.log(response.rows);
-          response.rows.forEach((row) => {
-               res.json(row);
-          });
+          console.log(response);
+          res.json(response);
+          // response.rows.forEach((row) => {
+          //      res.json(row);
+          // });
           pool.end();
      })
 })
